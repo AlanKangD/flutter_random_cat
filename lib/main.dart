@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -30,6 +32,9 @@ class CatService extends ChangeNotifier {
   // 고양이 사진 담을 변수
   List<String> catImages = [];
 
+  //좋아요 사진
+  List<String> favoriteImages = [];
+
   CatService() {
     getRandomCatImages();
   }
@@ -44,6 +49,15 @@ class CatService extends ChangeNotifier {
       print(map);
       print(map["url"]);
       catImages.add(map["url"]);
+    }
+    notifyListeners();
+  }
+
+  void toggleFavoriteImage(String catImage) {
+    if (favoriteImages.contains(catImage)) {
+      favoriteImages.remove(catImage); // 이미 좋아요한 경우 삭제
+    } else {
+      favoriteImages.add(catImage);
     }
     notifyListeners();
   }
@@ -87,10 +101,28 @@ class HomePage extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {
                     print("click $index");
+                    catService.toggleFavoriteImage(catImage);
                   },
-                  child: Image.network(
-                    catImage,
-                    fit: BoxFit.cover, // 박스에 맞게 이미지를 꽉 채워 주는 기능
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        // stack 에 화면을 꽉 체우겠다는 기능
+                        child: Image.network(
+                          catImage,
+                          fit: BoxFit.cover, // 박스에 맞게 이미지를 꽉 채워 주는 기능
+                        ),
+                      ),
+                      Positioned(
+                        right: 8,
+                        bottom: 8,
+                        child: Icon(
+                          Icons.favorite,
+                          color: catService.favoriteImages.contains(catImage)
+                              ? Colors.amber
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },
