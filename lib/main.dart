@@ -84,7 +84,10 @@ class HomePage extends StatelessWidget {
               catService.catImages.length,
               (index) {
                 String catImage = catService.catImages[index];
-                return Image.network(catImage);
+                return Image.network(
+                  catImage,
+                  fit: BoxFit.cover, // 박스에 맞게 이미지를 꽉 채워 주는 기능
+                );
               },
             ),
           ),
