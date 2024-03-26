@@ -47,6 +47,10 @@ class CatService extends ChangeNotifier {
 
   CatService(this.prefs) {
     getRandomCatImages();
+
+    // favorites로 저장된 favoriteImages를 가져옵니다.
+    // 저장된 값이 없는 경우 null을 반환하므로 이때는 빈 배열을 넣어줍니다.
+    favoriteImages = prefs.getStringList("favorites") ?? [];
   }
 
   //랜덤 고양이 사진 API 호출
@@ -69,6 +73,9 @@ class CatService extends ChangeNotifier {
     } else {
       favoriteImages.add(catImage);
     }
+    // favoriteImages를 favorites라는 이름으로 저장하기
+    prefs.setStringList("favorites", favoriteImages);
+
     notifyListeners();
   }
 }
